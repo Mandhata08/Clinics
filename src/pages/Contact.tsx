@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, MessageSquare } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, MessageSquare, Crown, Sparkles } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
@@ -28,32 +29,52 @@ const Contact = () => {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log('Form submitted:', data);
-    setIsSubmitted(true);
-    setIsSubmitting(false);
-    reset();
+    
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .insert([{
+          patient_name: `${data.firstName} ${data.lastName}`,
+          patient_email: data.email,
+          patient_phone: data.phone,
+          service: data.service,
+          doctor: 'To be assigned',
+          preferred_date: data.preferredDate,
+          preferred_time: data.preferredTime,
+          message: data.message,
+          status: 'pending'
+        }]);
+
+      if (error) throw error;
+      
+      setIsSubmitted(true);
+      reset();
+    } catch (error) {
+      console.error('Error submitting appointment:', error);
+      alert('There was an error submitting your appointment. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const services = [
-    'Laser Hair Removal',
-    'Skin Rejuvenation',
-    'Acne Treatment',
-    'Pigmentation Treatment',
-    'Vascular Lesions',
-    'Tattoo Removal',
-    'General Consultation'
+    'Royal Hair Removal',
+    'Golden Skin Revival',
+    'Diamond Clarity Treatment',
+    'Platinum Pigmentation Therapy',
+    'Royal Vascular Treatment',
+    'Premium Tattoo Removal',
+    'Royal Consultation'
   ];
 
   const timeSlots = [
-    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'
+    '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM',
+    '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'
   ];
 
   if (isSubmitted) {
     return (
-      <div className="pt-20 min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="pt-20 min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 to-gold-50 luxury-bg">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -63,21 +84,22 @@ const Contact = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+            className="w-24 h-24 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6"
           >
-            <CheckCircle className="text-green-600" size={48} />
+            <Crown className="text-royal-600" size={48} />
           </motion.div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Thank You!</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Your appointment request has been submitted successfully. We'll contact you within 24 hours to confirm your booking.
+          <h1 className="text-5xl font-bold luxury-text mb-4 font-serif">Royal Gratitude!</h1>
+          <p className="text-xl text-gray-700 mb-8 font-elegant">
+            Your royal appointment request has been submitted successfully. Our royal concierge will contact you within 24 hours to confirm your exclusive booking.
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsSubmitted(false)}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            className="royal-button"
           >
-            Book Another Appointment
+            <Crown className="inline mr-2" size={20} />
+            Book Another Royal Appointment
           </motion.button>
         </motion.div>
       </div>
@@ -87,23 +109,29 @@ const Contact = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section className="py-20 bg-gradient-to-br from-cream-50 via-gold-50 to-royal-100 luxury-bg relative overflow-hidden">
+        <div className="absolute top-10 right-10 floating-element">
+          <Crown className="text-gold-300 opacity-20" size={80} />
+        </div>
+        <div className="absolute bottom-10 left-10 floating-element" style={{ animationDelay: '3s' }}>
+          <Sparkles className="text-royal-300 opacity-20" size={60} />
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">Contact Us</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Ready to start your journey to healthier, more beautiful skin? Get in touch with our expert team today.
+            <h1 className="text-6xl font-bold luxury-text mb-6 font-serif">Royal Contact</h1>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
+              Ready to embark on your royal transformation journey? Connect with our distinguished team of experts today.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Contact Form & Info */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white luxury-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Contact Form */}
@@ -112,24 +140,24 @@ const Contact = () => {
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
+                className="royal-card p-8"
               >
-                <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Calendar className="text-blue-600 mr-3" size={32} />
-                  Book Your Appointment
+                <h2 className="text-3xl font-bold luxury-text mb-6 flex items-center font-serif">
+                  <Crown className="text-royal-600 mr-3" size={32} />
+                  Book Your Royal Appointment
                 </h2>
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         First Name *
                       </label>
                       <input
                         {...register('firstName')}
                         type="text"
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.firstName ? 'border-red-500' : 'border-gray-300'
+                          errors.firstName ? 'border-red-500' : 'border-gold-300'
                         }`}
                         placeholder="Enter your first name"
                       />
@@ -139,14 +167,14 @@ const Contact = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         Last Name *
                       </label>
                       <input
                         {...register('lastName')}
                         type="text"
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.lastName ? 'border-red-500' : 'border-gray-300'
+                          errors.lastName ? 'border-red-500' : 'border-gold-300'
                         }`}
                         placeholder="Enter your last name"
                       />
@@ -158,14 +186,14 @@ const Contact = () => {
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         Email *
                       </label>
                       <input
                         {...register('email')}
                         type="email"
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.email ? 'border-red-500' : 'border-gray-300'
+                          errors.email ? 'border-red-500' : 'border-gold-300'
                         }`}
                         placeholder="Enter your email"
                       />
@@ -175,16 +203,16 @@ const Contact = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         Phone *
                       </label>
                       <input
                         {...register('phone')}
                         type="tel"
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.phone ? 'border-red-500' : 'border-gray-300'
+                          errors.phone ? 'border-red-500' : 'border-gold-300'
                         }`}
-                        placeholder="Enter your phone number"
+                        placeholder="+91 98765 43210"
                       />
                       {errors.phone && (
                         <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -193,16 +221,16 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Service Interest *
+                    <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
+                      Royal Service Interest *
                     </label>
                     <select
                       {...register('service')}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                        errors.service ? 'border-red-500' : 'border-gray-300'
+                        errors.service ? 'border-red-500' : 'border-gold-300'
                       }`}
                     >
-                      <option value="">Select a service</option>
+                      <option value="">Select a royal service</option>
                       {services.map((service) => (
                         <option key={service} value={service}>{service}</option>
                       ))}
@@ -214,7 +242,7 @@ const Contact = () => {
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         Preferred Date *
                       </label>
                       <input
@@ -222,7 +250,7 @@ const Contact = () => {
                         type="date"
                         min={new Date().toISOString().split('T')[0]}
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.preferredDate ? 'border-red-500' : 'border-gray-300'
+                          errors.preferredDate ? 'border-red-500' : 'border-gold-300'
                         }`}
                       />
                       {errors.preferredDate && (
@@ -231,13 +259,13 @@ const Contact = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                         Preferred Time *
                       </label>
                       <select
                         {...register('preferredTime')}
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                          errors.preferredTime ? 'border-red-500' : 'border-gray-300'
+                          errors.preferredTime ? 'border-red-500' : 'border-gold-300'
                         }`}
                       >
                         <option value="">Select a time</option>
@@ -252,16 +280,16 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 font-elegant">
                       Message *
                     </label>
                     <textarea
                       {...register('message')}
                       rows={4}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                        errors.message ? 'border-red-500' : 'border-gray-300'
+                        errors.message ? 'border-red-500' : 'border-gold-300'
                       }`}
-                      placeholder="Tell us about your concerns or questions..."
+                      placeholder="Tell us about your royal skincare aspirations..."
                     />
                     {errors.message && (
                       <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
@@ -273,17 +301,17 @@ const Contact = () => {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full royal-button py-4 text-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Submitting...</span>
+                        <span>Submitting Royal Request...</span>
                       </>
                     ) : (
                       <>
-                        <Send size={20} />
-                        <span>Book Appointment</span>
+                        <Crown size={20} />
+                        <span>Book Royal Appointment</span>
                       </>
                     )}
                   </motion.button>
@@ -297,24 +325,25 @@ const Contact = () => {
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-2xl text-white"
+                className="bg-royal-gradient p-8 rounded-2xl text-white relative overflow-hidden"
               >
-                <h3 className="text-2xl font-bold mb-6 flex items-center">
-                  <MessageSquare className="mr-3" size={28} />
-                  Get in Touch
+                <div className="absolute inset-0 luxury-pattern opacity-20"></div>
+                <h3 className="text-2xl font-bold mb-6 flex items-center font-serif relative">
+                  <Crown className="mr-3" size={28} />
+                  Royal Contact
                 </h3>
                 
-                <div className="space-y-6">
+                <div className="space-y-6 relative">
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                       <MapPin className="text-white" size={24} />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">Location</h4>
-                      <p className="text-blue-100">
-                        123 Medical Drive<br />
-                        Toronto, ON M5V 3A8<br />
-                        Canada
+                      <h4 className="font-semibold mb-1 font-elegant">Royal Palace</h4>
+                      <p className="text-cream-100 font-elegant">
+                        Royal Medical Plaza<br />
+                        Luxury District, Mumbai 400001<br />
+                        Maharashtra, India
                       </p>
                     </div>
                   </div>
@@ -324,9 +353,9 @@ const Contact = () => {
                       <Phone className="text-white" size={24} />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">Phone</h4>
-                      <p className="text-blue-100">(416) 555-0123</p>
-                      <p className="text-blue-100 text-sm">Emergency: (416) 555-0124</p>
+                      <h4 className="font-semibold mb-1 font-elegant">Royal Hotline</h4>
+                      <p className="text-cream-100 font-elegant">+91 98765 43210</p>
+                      <p className="text-cream-100 text-sm font-elegant">Emergency: +91 98765 43211</p>
                     </div>
                   </div>
 
@@ -335,9 +364,9 @@ const Contact = () => {
                       <Mail className="text-white" size={24} />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">Email</h4>
-                      <p className="text-blue-100">info@luminanceclinic.com</p>
-                      <p className="text-blue-100 text-sm">appointments@luminanceclinic.com</p>
+                      <h4 className="font-semibold mb-1 font-elegant">Royal Correspondence</h4>
+                      <p className="text-cream-100 font-elegant">royal@luminanceclinic.com</p>
+                      <p className="text-cream-100 text-sm font-elegant">appointments@luminanceclinic.com</p>
                     </div>
                   </div>
 
@@ -346,10 +375,10 @@ const Contact = () => {
                       <Clock className="text-white" size={24} />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">Hours</h4>
-                      <div className="text-blue-100 text-sm space-y-1">
-                        <p>Monday - Friday: 9:00 AM - 7:00 PM</p>
-                        <p>Saturday: 10:00 AM - 4:00 PM</p>
+                      <h4 className="font-semibold mb-1 font-elegant">Royal Hours</h4>
+                      <div className="text-cream-100 text-sm space-y-1 font-elegant">
+                        <p>Monday - Friday: 10:00 AM - 8:00 PM</p>
+                        <p>Saturday: 10:00 AM - 6:00 PM</p>
                         <p>Sunday: Closed</p>
                       </div>
                     </div>
@@ -363,14 +392,14 @@ const Contact = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="bg-red-50 border border-red-200 p-6 rounded-2xl"
+                className="bg-red-50 border border-red-200 p-6 rounded-2xl royal-glow"
               >
-                <h4 className="font-semibold text-red-800 mb-2">Emergency Contact</h4>
-                <p className="text-red-700 text-sm mb-3">
-                  For urgent skin concerns or post-treatment emergencies, please call our emergency line.
+                <h4 className="font-semibold text-red-800 mb-2 font-elegant">Royal Emergency</h4>
+                <p className="text-red-700 text-sm mb-3 font-elegant">
+                  For urgent royal skincare concerns or post-treatment emergencies, please call our dedicated royal emergency line.
                 </p>
-                <p className="font-semibold text-red-800">(416) 555-0124</p>
-                <p className="text-red-600 text-xs mt-1">Available 24/7</p>
+                <p className="font-semibold text-red-800 font-elegant">+91 98765 43211</p>
+                <p className="text-red-600 text-xs mt-1 font-elegant">Available 24/7</p>
               </motion.div>
 
               {/* Map Placeholder */}
@@ -379,12 +408,12 @@ const Contact = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
-                className="bg-gray-100 rounded-2xl h-64 flex items-center justify-center"
+                className="bg-cream-100 rounded-2xl h-64 flex items-center justify-center royal-glow"
               >
                 <div className="text-center">
-                  <MapPin className="text-gray-400 mx-auto mb-2" size={48} />
-                  <p className="text-gray-600">Interactive Map</p>
-                  <p className="text-gray-500 text-sm">123 Medical Drive, Toronto</p>
+                  <MapPin className="text-royal-400 mx-auto mb-2" size={48} />
+                  <p className="text-royal-600 font-elegant">Royal Location Map</p>
+                  <p className="text-royal-500 text-sm font-elegant">Luxury District, Mumbai</p>
                 </div>
               </motion.div>
             </div>
@@ -393,7 +422,7 @@ const Contact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-cream-50 luxury-bg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -401,29 +430,29 @@ const Contact = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-xl text-gray-600">
-              Quick answers to common questions about our services and booking process
+            <h2 className="text-5xl font-bold luxury-text mb-4 font-serif">Royal Inquiries</h2>
+            <p className="text-xl text-gray-700 font-elegant">
+              Answers to common questions about our royal services and exclusive booking process
             </p>
           </motion.div>
 
           <div className="space-y-6">
             {[
               {
-                question: "How far in advance should I book my appointment?",
-                answer: "We recommend booking 1-2 weeks in advance for regular treatments. For initial consultations, we often have same-week availability."
+                question: "How far in advance should I book my royal appointment?",
+                answer: "We recommend booking 2-3 weeks in advance for royal treatments. For initial royal consultations, we often have same-week availability for our distinguished clientele."
               },
               {
-                question: "What should I expect during my first visit?",
-                answer: "Your first visit includes a comprehensive consultation, skin analysis, and treatment plan discussion. We'll also review your medical history and answer any questions."
+                question: "What should I expect during my first royal visit?",
+                answer: "Your first royal visit includes a comprehensive consultation in our royal suite, advanced skin analysis, and personalized treatment plan discussion. We'll also review your medical history and provide royal aftercare guidance."
               },
               {
-                question: "Do you offer payment plans?",
-                answer: "Yes, we offer flexible payment plans for treatment packages. Our team can discuss options during your consultation."
+                question: "Do you offer royal payment plans?",
+                answer: "Yes, we offer exclusive flexible payment plans for our royal treatment packages. Our royal concierge can discuss premium options during your consultation."
               },
               {
-                question: "What is your cancellation policy?",
-                answer: "We require 24-hour notice for cancellations. Same-day cancellations may incur a fee. We understand emergencies happen and handle each case individually."
+                question: "What is your royal cancellation policy?",
+                answer: "We require 48-hour notice for royal appointment cancellations. Same-day cancellations may incur a premium fee. We understand emergencies happen and handle each case with royal discretion."
               }
             ].map((faq, index) => (
               <motion.div
@@ -432,10 +461,10 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white p-6 rounded-lg shadow-sm"
+                className="royal-card p-6"
               >
-                <h4 className="font-semibold text-gray-900 mb-2">{faq.question}</h4>
-                <p className="text-gray-600">{faq.answer}</p>
+                <h4 className="font-semibold luxury-text mb-2 font-elegant">{faq.question}</h4>
+                <p className="text-gray-700 font-elegant">{faq.answer}</p>
               </motion.div>
             ))}
           </div>
