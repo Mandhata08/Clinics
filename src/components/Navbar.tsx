@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Menu, X, User, LogOut, Crown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -30,18 +30,25 @@ const Navbar = () => {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="bg-white/95 backdrop-blur-sm fixed w-full z-50 border-b border-gray-100 shadow-sm"
+      className="bg-white/95 backdrop-blur-sm fixed w-full z-50 border-b border-gold-200/50 shadow-lg luxury-bg"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-2">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center"
+              className="relative"
             >
-              <span className="text-white font-bold text-lg">L</span>
+              <img 
+                src="/image.png" 
+                alt="Luminance Clinic" 
+                className="h-12 w-auto object-contain"
+              />
             </motion.div>
-            <span className="text-2xl font-bold text-gray-900">Luminance Clinic</span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold luxury-text font-serif">LUMINANCE CLINIC</span>
+              <span className="text-xs text-royal-600 font-elegant tracking-widest">SKIN | HAIR | BODY | AESTHETICS</span>
+            </div>
           </Link>
           
           {/* Desktop Navigation */}
@@ -50,15 +57,15 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`relative text-gray-700 hover:text-blue-600 transition-colors ${
-                  location.pathname === item.path ? 'text-blue-600' : ''
+                className={`relative text-gray-700 hover:text-royal-600 transition-colors font-elegant font-medium ${
+                  location.pathname === item.path ? 'text-royal-600' : ''
                 }`}
               >
                 {item.name}
                 {location.pathname === item.path && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-600"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-royal-gradient"
                   />
                 )}
               </Link>
@@ -69,9 +76,9 @@ const Navbar = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex items-center space-x-2 royal-button"
                 >
-                  <User size={20} />
+                  <Crown size={20} />
                   <span>{user.name}</span>
                 </motion.button>
                 
@@ -81,18 +88,18 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100"
+                      className="absolute right-0 mt-2 w-48 royal-card"
                     >
                       <Link
                         to={user.role === 'admin' ? '/admin' : '/dashboard'}
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gold-50 rounded-t-lg font-elegant"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Dashboard
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg flex items-center space-x-2"
+                        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gold-50 rounded-b-lg flex items-center space-x-2 font-elegant"
                       >
                         <LogOut size={16} />
                         <span>Logout</span>
@@ -105,13 +112,13 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  className="text-gray-700 hover:text-royal-600 transition-colors font-elegant"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="royal-button"
                 >
                   Register
                 </Link>
@@ -136,14 +143,14 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100"
+            className="md:hidden bg-white/95 backdrop-blur-sm border-t border-gold-200/50 luxury-bg"
           >
             <div className="px-4 py-2 space-y-2">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="block py-2 text-gray-700 hover:text-blue-600"
+                  className="block py-2 text-gray-700 hover:text-royal-600 font-elegant"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
@@ -153,14 +160,14 @@ const Navbar = () => {
                 <>
                   <Link
                     to={user.role === 'admin' ? '/admin' : '/dashboard'}
-                    className="block py-2 text-gray-700 hover:text-blue-600"
+                    className="block py-2 text-gray-700 hover:text-royal-600 font-elegant"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Dashboard
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left py-2 text-gray-700 hover:text-blue-600"
+                    className="block w-full text-left py-2 text-gray-700 hover:text-royal-600 font-elegant"
                   >
                     Logout
                   </button>
@@ -169,14 +176,14 @@ const Navbar = () => {
                 <>
                   <Link
                     to="/login"
-                    className="block py-2 text-gray-700 hover:text-blue-600"
+                    className="block py-2 text-gray-700 hover:text-royal-600 font-elegant"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
-                    className="block w-full bg-blue-600 text-white py-2 rounded-lg mt-4 text-center"
+                    className="block w-full royal-button mt-4 text-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Register

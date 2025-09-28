@@ -1,3 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: linear-gradient(135deg, #fefdfb 0%, #faf1e0 100%);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  .royal-button {
+    @apply bg-royal-gradient text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden;
+  }
+  
+  .royal-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .royal-button:hover::before {
+    left: 100%;
+  }
+  
+  .royal-card {
+    @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gold-200/50 hover:shadow-2xl transition-all duration-500 relative overflow-hidden;
+  }
+  
+  .royal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #d4af37, #b8941f, #967818);
+  }
+  
+  .luxury-text {
+    @apply bg-gradient-to-r from-royal-600 via-gold-500 to-royal-700 bg-clip-text text-transparent;
+  }
+  
+  .floating-element {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .royal-glow {
+    animation: royal-glow 3s ease-in-out infinite alternate;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #faf1e0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #d4af37, #b8941f);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #b8941f, #967818);
+}
+
+/* Luxury pattern overlay */
+.luxury-bg {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(184, 148, 31, 0.1) 0%, transparent 50%),
+    url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23d4af37" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+}
