@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { supabase, type Offer, type Appointment } from '../lib/supabase';
-import { Crown, Plus, Edit, Trash2, Calendar, User, Phone, Mail, CheckCircle, XCircle, Star } from 'lucide-react';
+import { Crown, Plus, CreditCard as Edit, Trash2, Calendar, User, Phone, Mail, CheckCircle, XCircle, Star } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [offers, setOffers] = useState<Offer[]>([]);
