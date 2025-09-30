@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, MessageSquare, Crown, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { supabase } from '../lib/supabase';
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
