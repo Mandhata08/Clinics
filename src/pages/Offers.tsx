@@ -33,8 +33,7 @@ const Offers = () => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      minimumFractionDigits: 0
     }).format(price);
   };
 
@@ -46,30 +45,6 @@ const Offers = () => {
       default: return Star;
     }
   };
-
-  const seasonalOffers = [
-    {
-      season: 'Spring Special',
-      title: 'Spring Renewal Package',
-      description: 'Refresh your skin for spring with our comprehensive treatment package',
-      discount: '30%',
-      validUntil: '2024-05-31'
-    },
-    {
-      season: 'Summer Ready',
-      title: 'Hair-Free Summer',
-      description: 'Get ready for summer with our intensive hair removal packages',
-      discount: '25%',
-      validUntil: '2024-07-31'
-    },
-    {
-      season: 'Fall Refresh',
-      title: 'Post-Summer Recovery',
-      description: 'Repair summer damage with our skin rejuvenation treatments',
-      discount: '35%',
-      validUntil: '2024-11-30'
-    }
-  ];
 
   return (
     <div className="pt-20">
@@ -199,48 +174,6 @@ const Offers = () => {
       </section>
 
       {/* Seasonal Offers */}
-      <section className="py-20 bg-cream-50 luxury-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-5xl font-bold luxury-text mb-4 font-serif">Seasonal Royal Offers</h2>
-            <p className="text-xl text-gray-700 font-elegant">
-              Exclusive seasonal packages designed for your royal skincare journey
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {seasonalOffers.map((offer, index) => (
-              <motion.div
-                key={offer.season}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="royal-card p-8 text-center hover:shadow-2xl transition-shadow group"
-              >
-                <div className="w-16 h-16 bg-royal-gradient rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <Crown className="text-white" size={32} />
-                </div>
-                <h3 className="text-xl font-bold luxury-text mb-2 font-serif">{offer.season}</h3>
-                <h4 className="text-lg font-semibold text-royal-600 mb-3 font-elegant">{offer.title}</h4>
-                <p className="text-gray-700 mb-4 font-elegant">{offer.description}</p>
-                <div className="text-2xl font-bold luxury-text mb-2 font-serif">{offer.discount} OFF</div>
-                <p className="text-sm text-gray-600 mb-6 font-elegant">Valid until {offer.validUntil}</p>
-                <button className="w-full royal-button">
-                  Learn More
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Membership Program */}
       <section className="py-20 bg-royal-gradient relative overflow-hidden">
         <div className="absolute inset-0 luxury-pattern opacity-20"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

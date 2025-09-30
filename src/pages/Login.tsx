@@ -25,13 +25,26 @@ const Login = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    setLoginError('');
-    const success = await login(data.email, data.password);
+    const result = await login(data.email, data.password);
     
-    if (success) {
-      navigate('/dashboard');
+    if (result.success) {
+      // Navigate based on user role
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile?.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }
     } else {
-      setLoginError('Invalid email or password. Try admin@luminance.com / admin123 or any email with password "password"');
+      setLoginError(result.error || 'Login failed');
     }
   };
 
@@ -155,12 +168,13 @@ const Login = () => {
           </div>
 
           {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">Demo Credentials:</h4>
-            <div className="text-sm text-gray-600 space-y-1">
-              <p><strong>Admin:</strong> admin@luminance.com / admin123</p>
-              <p><strong>Customer:</strong> any email / password</p>
-            </div>
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 text-sm">
+              Need an admin account?{' '}
+              <Link to="/admin-register" className="text-blue-600 hover:text-blue-700 font-semibold">
+                Admin Registration
+              </Link>
+            </p>
           </div>
         </motion.div>
       </div>

@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, MessageSquare, Crown, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
@@ -58,13 +59,13 @@ const Contact = () => {
   };
 
   const services = [
-    'Royal Hair Removal',
-    'Golden Skin Revival',
-    'Diamond Clarity Treatment',
-    'Platinum Pigmentation Therapy',
-    'Royal Vascular Treatment',
-    'Premium Tattoo Removal',
-    'Royal Consultation'
+    'Laser Hair Removal',
+    'Skin Rejuvenation',
+    'Acne Treatment',
+    'Pigmentation Treatment',
+    'Vascular Lesions',
+    'Tattoo Removal',
+    'Consultation'
   ];
 
   const timeSlots = [

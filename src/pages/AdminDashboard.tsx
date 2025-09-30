@@ -1,36 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { Crown, Plus, CreditCard as Edit, Trash2, Calendar, User, Phone, Mail, CheckCircle, XCircle } from 'lucide-react';
-
-interface Offer {
-  id: string;
-  title: string;
-  discount: string;
-  original_price: number;
-  sale_price: number;
-  service: string;
-  description: string;
-  valid_until: string;
-  terms: string[];
-  popular: boolean;
-  color: string;
-  image_url?: string;
-  active: boolean;
-}
-
-interface Appointment {
-  id: string;
-  patient_name: string;
-  patient_email: string;
-  patient_phone: string;
-  service: string;
-  doctor: string;
-  preferred_date: string;
-  preferred_time: string;
-  message: string;
-  status: string;
-  created_at: string;
-}
+import { motion } from 'framer-motion';
+import { supabase, type Offer, type Appointment } from '../lib/supabase';
+import { Crown, Plus, Edit, Trash2, Calendar, User, Phone, Mail, CheckCircle, XCircle, Star } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -115,26 +86,31 @@ export default function AdminDashboard() {
         if (error) throw error;
       }
 
-      setOfferForm({
-        title: '',
-        discount: '',
-        original_price: '',
-        sale_price: '',
-        service: '',
-        description: '',
-        valid_until: '',
-        terms: '',
-        popular: false,
-        color: 'gold',
-        image_url: '',
-        active: true
-      });
-      setShowOfferForm(false);
-      setEditingOffer(null);
+      resetForm();
       fetchOffers();
     } catch (error) {
       console.error('Error saving offer:', error);
+      alert('Error saving offer. Please try again.');
     }
+  };
+
+  const resetForm = () => {
+    setOfferForm({
+      title: '',
+      discount: '',
+      original_price: '',
+      sale_price: '',
+      service: '',
+      description: '',
+      valid_until: '',
+      terms: '',
+      popular: false,
+      color: 'gold',
+      image_url: '',
+      active: true
+    });
+    setShowOfferForm(false);
+    setEditingOffer(null);
   };
 
   const handleEditOffer = (offer: Offer) => {
@@ -168,6 +144,7 @@ export default function AdminDashboard() {
         fetchOffers();
       } catch (error) {
         console.error('Error deleting offer:', error);
+        alert('Error deleting offer. Please try again.');
       }
     }
   };
@@ -183,54 +160,110 @@ export default function AdminDashboard() {
       fetchAppointments();
     } catch (error) {
       console.error('Error updating appointment:', error);
+      alert('Error updating appointment. Please try again.');
     }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0
+    }).format(price);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-royal-cream via-white to-royal-gold/10 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-cream-50 via-white to-gold-50 flex items-center justify-center pt-20">
         <div className="text-center">
-          <Crown className="w-12 h-12 text-royal-gold mx-auto mb-4 animate-pulse" />
-          <p className="text-royal-navy font-serif">Loading Royal Dashboard...</p>
+          <Crown className="w-12 h-12 text-gold-600 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-700 font-serif">Loading Admin Dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-royal-cream via-white to-royal-gold/10 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-cream-50 via-white to-gold-50 pt-20 luxury-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <Crown className="w-16 h-16 text-royal-gold mx-auto mb-4" />
-          <h1 className="text-4xl font-serif text-royal-navy mb-2">Royal Admin Dashboard</h1>
-          <p className="text-royal-navy/70">Manage your clinic's royal offerings</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <Crown className="w-16 h-16 text-gold-600 mx-auto mb-4" />
+          <h1 className="text-4xl font-serif luxury-text mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600 font-elegant">Manage your clinic's offerings and appointments</p>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <div className="grid md:grid-cols-4 gap-6 mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="royal-card p-6 text-center"
+          >
+            <Star className="w-8 h-8 text-gold-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold luxury-text">{offers.length}</div>
+            <div className="text-gray-600 font-elegant">Active Offers</div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="royal-card p-6 text-center"
+          >
+            <Calendar className="w-8 h-8 text-royal-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold luxury-text">{appointments.length}</div>
+            <div className="text-gray-600 font-elegant">Total Appointments</div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="royal-card p-6 text-center"
+          >
+            <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold luxury-text">
+              {appointments.filter(apt => apt.status === 'confirmed').length}
+            </div>
+            <div className="text-gray-600 font-elegant">Confirmed</div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="royal-card p-6 text-center"
+          >
+            <User className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold luxury-text">
+              {appointments.filter(apt => apt.status === 'pending').length}
+            </div>
+            <div className="text-gray-600 font-elegant">Pending</div>
+          </motion.div>
         </div>
 
         {/* Offers Section */}
-        <div className="mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mb-12"
+        >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-serif text-royal-navy">Royal Offers</h2>
+            <h2 className="text-2xl font-serif luxury-text">Manage Offers</h2>
             <button
               onClick={() => {
                 setShowOfferForm(true);
                 setEditingOffer(null);
-                setOfferForm({
-                  title: '',
-                  discount: '',
-                  original_price: '',
-                  sale_price: '',
-                  service: '',
-                  description: '',
-                  valid_until: '',
-                  terms: '',
-                  popular: false,
-                  color: 'gold',
-                  image_url: '',
-                  active: true
-                });
+                resetForm();
               }}
-              className="bg-royal-gold text-white px-6 py-2 rounded-lg hover:bg-royal-gold/90 transition-colors flex items-center gap-2"
+              className="royal-button flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add New Offer
@@ -239,8 +272,12 @@ export default function AdminDashboard() {
 
           {/* Offer Form */}
           {showOfferForm && (
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-royal-gold/20">
-              <h3 className="text-xl font-serif text-royal-navy mb-4">
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="royal-card p-6 mb-6"
+            >
+              <h3 className="text-xl font-serif luxury-text mb-4">
                 {editingOffer ? 'Edit Offer' : 'Create New Offer'}
               </h3>
               <form onSubmit={handleOfferSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -249,7 +286,7 @@ export default function AdminDashboard() {
                   placeholder="Offer Title"
                   value={offerForm.title}
                   onChange={(e) => setOfferForm({...offerForm, title: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                   required
                 />
                 <input
@@ -257,7 +294,7 @@ export default function AdminDashboard() {
                   placeholder="Discount (e.g., 50% OFF)"
                   value={offerForm.discount}
                   onChange={(e) => setOfferForm({...offerForm, discount: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                   required
                 />
                 <input
@@ -265,21 +302,21 @@ export default function AdminDashboard() {
                   placeholder="Original Price (₹)"
                   value={offerForm.original_price}
                   onChange={(e) => setOfferForm({...offerForm, original_price: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                 />
                 <input
                   type="number"
                   placeholder="Sale Price (₹)"
                   value={offerForm.sale_price}
                   onChange={(e) => setOfferForm({...offerForm, sale_price: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                 />
                 <input
                   type="text"
                   placeholder="Service Name"
                   value={offerForm.service}
                   onChange={(e) => setOfferForm({...offerForm, service: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                   required
                 />
                 <input
@@ -287,14 +324,14 @@ export default function AdminDashboard() {
                   placeholder="Valid Until"
                   value={offerForm.valid_until}
                   onChange={(e) => setOfferForm({...offerForm, valid_until: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                   required
                 />
                 <textarea
                   placeholder="Description"
                   value={offerForm.description}
                   onChange={(e) => setOfferForm({...offerForm, description: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold md:col-span-2"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500 md:col-span-2"
                   rows={3}
                   required
                 />
@@ -303,31 +340,31 @@ export default function AdminDashboard() {
                   placeholder="Terms (comma separated)"
                   value={offerForm.terms}
                   onChange={(e) => setOfferForm({...offerForm, terms: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                 />
                 <input
                   type="url"
                   placeholder="Image URL (optional)"
                   value={offerForm.image_url}
                   onChange={(e) => setOfferForm({...offerForm, image_url: e.target.value})}
-                  className="border border-royal-gold/30 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-royal-gold"
+                  className="border border-gold-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold-500"
                 />
                 <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 font-elegant">
                     <input
                       type="checkbox"
                       checked={offerForm.popular}
                       onChange={(e) => setOfferForm({...offerForm, popular: e.target.checked})}
-                      className="text-royal-gold"
+                      className="text-gold-600"
                     />
                     Popular
                   </label>
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 font-elegant">
                     <input
                       type="checkbox"
                       checked={offerForm.active}
                       onChange={(e) => setOfferForm({...offerForm, active: e.target.checked})}
-                      className="text-royal-gold"
+                      className="text-gold-600"
                     />
                     Active
                   </label>
@@ -335,35 +372,37 @@ export default function AdminDashboard() {
                 <div className="md:col-span-2 flex gap-4">
                   <button
                     type="submit"
-                    className="bg-royal-gold text-white px-6 py-2 rounded-lg hover:bg-royal-gold/90 transition-colors"
+                    className="royal-button"
                   >
                     {editingOffer ? 'Update Offer' : 'Create Offer'}
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowOfferForm(false);
-                      setEditingOffer(null);
-                    }}
-                    className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                    onClick={resetForm}
+                    className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors font-elegant"
                   >
                     Cancel
                   </button>
                 </div>
               </form>
-            </div>
+            </motion.div>
           )}
 
           {/* Offers List */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {offers.map((offer) => (
-              <div key={offer.id} className="bg-white rounded-xl shadow-lg p-6 border border-royal-gold/20">
+              <motion.div
+                key={offer.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="royal-card p-6"
+              >
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-serif text-lg text-royal-navy">{offer.title}</h3>
+                  <h3 className="font-serif text-lg luxury-text">{offer.title}</h3>
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEditOffer(offer)}
-                      className="text-royal-gold hover:text-royal-gold/70"
+                      className="text-gold-600 hover:text-gold-700"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
@@ -375,41 +414,63 @@ export default function AdminDashboard() {
                     </button>
                   </div>
                 </div>
-                <p className="text-2xl font-bold text-royal-gold mb-2">{offer.discount}</p>
-                <p className="text-royal-navy mb-2">{offer.service}</p>
+                <p className="text-2xl font-bold text-gold-600 mb-2">{offer.discount}</p>
+                <p className="text-gray-700 mb-2 font-elegant">{offer.service}</p>
                 <div className="flex items-center gap-2 mb-2">
                   {offer.original_price > 0 && (
-                    <span className="text-gray-500 line-through">₹{offer.original_price}</span>
+                    <span className="text-gray-500 line-through font-elegant">
+                      {formatPrice(offer.original_price)}
+                    </span>
                   )}
                   {offer.sale_price > 0 && (
-                    <span className="text-royal-gold font-bold">₹{offer.sale_price}</span>
+                    <span className="text-gold-600 font-bold font-elegant">
+                      {formatPrice(offer.sale_price)}
+                    </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">{offer.description}</p>
+                <p className="text-sm text-gray-600 mb-4 font-elegant">{offer.description}</p>
                 <div className="flex justify-between items-center text-sm">
-                  <span className={`px-2 py-1 rounded ${offer.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  <span className={`px-2 py-1 rounded font-elegant ${
+                    offer.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
                     {offer.active ? 'Active' : 'Inactive'}
                   </span>
-                  <span className="text-gray-500">Until {new Date(offer.valid_until).toLocaleDateString()}</span>
+                  <span className="text-gray-500 font-elegant">
+                    Until {new Date(offer.valid_until).toLocaleDateString()}
+                  </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Appointments Section */}
-        <div>
-          <h2 className="text-2xl font-serif text-royal-navy mb-6">Royal Appointments</h2>
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <h2 className="text-2xl font-serif luxury-text mb-6">Appointments</h2>
+          <div className="royal-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-royal-gold/10">
+                <thead className="bg-gold-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-royal-navy uppercase tracking-wider">Patient</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-royal-navy uppercase tracking-wider">Service</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-royal-navy uppercase tracking-wider">Date & Time</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-royal-navy uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-royal-navy uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider font-elegant">
+                      Patient
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider font-elegant">
+                      Service
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider font-elegant">
+                      Date & Time
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider font-elegant">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider font-elegant">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -418,36 +479,47 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="flex items-center">
-                            <User className="w-4 h-4 text-royal-gold mr-2" />
-                            <div className="text-sm font-medium text-royal-navy">{appointment.patient_name}</div>
+                            <User className="w-4 h-4 text-gold-600 mr-2" />
+                            <div className="text-sm font-medium text-gray-900 font-elegant">
+                              {appointment.patient_name}
+                            </div>
                           </div>
                           <div className="flex items-center mt-1">
                             <Mail className="w-3 h-3 text-gray-400 mr-2" />
-                            <div className="text-sm text-gray-500">{appointment.patient_email}</div>
+                            <div className="text-sm text-gray-500 font-elegant">
+                              {appointment.patient_email}
+                            </div>
                           </div>
                           <div className="flex items-center mt-1">
                             <Phone className="w-3 h-3 text-gray-400 mr-2" />
-                            <div className="text-sm text-gray-500">{appointment.patient_phone}</div>
+                            <div className="text-sm text-gray-500 font-elegant">
+                              {appointment.patient_phone}
+                            </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-royal-navy">{appointment.service}</div>
-                        <div className="text-sm text-gray-500">Dr. {appointment.doctor}</div>
+                        <div className="text-sm text-gray-900 font-elegant">{appointment.service}</div>
+                        <div className="text-sm text-gray-500 font-elegant">{appointment.doctor}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <Calendar className="w-4 h-4 text-royal-gold mr-2" />
+                          <Calendar className="w-4 h-4 text-gold-600 mr-2" />
                           <div>
-                            <div className="text-sm text-royal-navy">{new Date(appointment.preferred_date).toLocaleDateString()}</div>
-                            <div className="text-sm text-gray-500">{appointment.preferred_time}</div>
+                            <div className="text-sm text-gray-900 font-elegant">
+                              {new Date(appointment.preferred_date).toLocaleDateString()}
+                            </div>
+                            <div className="text-sm text-gray-500 font-elegant">
+                              {appointment.preferred_time}
+                            </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full font-elegant ${
                           appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
                           appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          appointment.status === 'completed' ? 'bg-blue-100 text-blue-800' :
                           'bg-yellow-100 text-yellow-800'
                         }`}>
                           {appointment.status}
@@ -459,16 +531,27 @@ export default function AdminDashboard() {
                             <button
                               onClick={() => updateAppointmentStatus(appointment.id, 'confirmed')}
                               className="text-green-600 hover:text-green-900"
+                              title="Confirm"
                             >
                               <CheckCircle className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => updateAppointmentStatus(appointment.id, 'cancelled')}
                               className="text-red-600 hover:text-red-900"
+                              title="Cancel"
                             >
                               <XCircle className="w-4 h-4" />
                             </button>
                           </div>
+                        )}
+                        {appointment.status === 'confirmed' && (
+                          <button
+                            onClick={() => updateAppointmentStatus(appointment.id, 'completed')}
+                            className="text-blue-600 hover:text-blue-900"
+                            title="Mark as completed"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
                         )}
                       </td>
                     </tr>
@@ -477,7 +560,7 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
