@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Eye, EyeOff, LogIn, User, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const schema = yup.object({
   email: yup.string().email('Invalid email').required('Email is required'),
