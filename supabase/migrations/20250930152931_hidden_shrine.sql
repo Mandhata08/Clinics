@@ -112,12 +112,14 @@ CREATE POLICY "Admins can view all profiles"
   );
 
 -- Offers policies
+DROP POLICY IF EXISTS "Anyone can view active offers" ON offers;
 CREATE POLICY "Anyone can view active offers"
   ON offers
   FOR SELECT
   TO public
   USING (active = true);
 
+DROP POLICY IF EXISTS "Authenticated users can manage offers" ON offers;
 CREATE POLICY "Admins can manage offers"
   ON offers
   FOR ALL
@@ -130,12 +132,14 @@ CREATE POLICY "Admins can manage offers"
   );
 
 -- Appointments policies
+DROP POLICY IF EXISTS "Users can create appointments" ON appointments;
 CREATE POLICY "Users can create appointments"
   ON appointments
   FOR INSERT
   TO anon, authenticated
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Authenticated users can view all appointments" ON appointments;
 CREATE POLICY "Admins can view all appointments"
   ON appointments
   FOR SELECT
@@ -147,6 +151,7 @@ CREATE POLICY "Admins can view all appointments"
     )
   );
 
+DROP POLICY IF EXISTS "Authenticated users can update appointments" ON appointments;
 CREATE POLICY "Admins can update appointments"
   ON appointments
   FOR UPDATE
@@ -159,12 +164,14 @@ CREATE POLICY "Admins can update appointments"
   );
 
 -- Doctors policies
+DROP POLICY IF EXISTS "Anyone can view active doctors" ON doctors;
 CREATE POLICY "Anyone can view active doctors"
   ON doctors
   FOR SELECT
   TO public
   USING (active = true);
 
+DROP POLICY IF EXISTS "Authenticated users can manage doctors" ON doctors;
 CREATE POLICY "Admins can manage doctors"
   ON doctors
   FOR ALL
